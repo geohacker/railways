@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.15.0/mapbox-gl.js'></script>
+    <script type="text/javascript" src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script>
+    <!-- <script src='stations.js'></script> -->
+    <script src='station_time.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VvaGFja2VyIiwiYSI6ImFIN0hENW8ifQ.GGpH9gLyEg0PZf3NPQ7Vrg';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/geohacker/cim0ng7dq00jxcglvn6jsjiqs', //stylesheet location
+    center: [82.705, 21.841], // starting position
+    zoom: 4, // starting zoom
+    hash: true
+});
+
+var index = 0;
+var start = null;
+map.on('style.load', function () {
+
+    map.addSource('point', {
+        "type": "geojson",
+        "data": station_time.features[0]
+    });
+
+   map.addLayer({
+        "id": "point",
+        "source": "point",
+        "type": "circle",
+        "paint": {
+            "circle-radius": 10,
+            "circle-color": "#050df2",
+            "circle-blur": 1
+        },
+    });
+
+   map.addLayer({
+        "id": "pointInner",
+        "source": "point",
+        "type": "circle",
+        "paint": {
+            "circle-radius": 2,
+            "circle-color": "white"
+        },
+    });
+
+   map.addLayer({
+        "id": "pointLabel",
+        "source": "point",
+        "type": "symbol",
+        "layout": {
+            "text-field": "{name}, {time}, Day {day}",
+            "text-size": 12,
+            "text-anchor": "left",
+            "text-font": ["Open Sans Semibold"],
+            "text-max-width": 15
+        },
+        "paint": {
+            "text-translate": [5, 0],
+            "text-halo-color": "white",
+            "text-halo-width": 1
+        }
+    });
+
+    generatePoints();
+
+});
+
+function animateMarker(timestamp) {
+    if (!start) start = timestamp;
+
+    var interval =  timestamp - start;
+
+    if (interval > 1300) {
+
+        start = timestamp;
+        if (index === route.features.length) {
+            index = 0;
+        }
+
+        var currentPoint = getPoint();
+        if (currentPoint.properties.name) {
+
+        }
+        map.getSource('point').setData(currentPoint);
+            index = index + 1;
+        }
+
+        // Request the next frame of the animation.
+        requestAnimationFrame(animateMarker);
+}
+
+function getPoint() {
+    return route.features[index];
+}
+
+var route = {
+    "type": "FeatureCollection",
+    "features": []
+};
+
+function generatePoints() {
+
+    var stationsLength = station_time.features.length;
+    for (var i = 0; i < stationsLength; i++) {
+        var time = station_time.features[i].properties.time.split(':');
+        var splitTime = time[0] + ":" + time[1];
+        station_time.features[i].properties.time = splitTime;
+
+        route.features.push(station_time.features[i]);
+
+        if (i !== stationsLength -1) {
+            var point1 = station_time.features[i];
+            var point2 = station_time.features[i+1];
+            var midpoint = turf.midpoint(point1, point2);
+            var midpoint2 = turf.midpoint(midpoint, point2);
+            // route.features.push(midpoint);
+            // route.features.push(midpoint2);
+        }
+    }
+
+    animateMarker(0);
+}
+
+</script>
+
+</body>
+</html>
