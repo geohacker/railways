@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Indian Railway Zones</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.15.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .info {/*box-shadow: 0 1px 2px rgba(0,0,0,0.20);*/}
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<div class='pin-topleft pad1 col4'>
+    <div class='pad2 info round'>
+        <div class='rounded-toggle short inline'>
+          <a class='active' id='play' href='#'>Play</a>
+          <a id='stop' href='#'>Stop</a>
+          <!-- <a id='all' href='#'>All Zones</a> -->
+        </div>
+        <h2>Indian Railway Zones</h2>
+        <h1 id='name'> </h1>
+    </div>
+</div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VvaGFja2VyIiwiYSI6ImFIN0hENW8ifQ.GGpH9gLyEg0PZf3NPQ7Vrg';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/geohacker/cirt21bje0007gynmtp2pujd0', //stylesheet location
+    center: [78.36, 22.32], // starting position
+    zoom: 4, // starting zoom
+    hash: true,
+    maxZoom: 11,
+    minZoom: 4
+});
+
+var play = true;
+var index = 0;
+var zones = [
+    {
+        'id': 'kr',
+        'name': 'Konkan Railway'
+    },
+    {
+        'id': 'cr',
+        'name': 'Central Railway'
+    },
+    {
+        'id': 'nr',
+        'name': 'Northern Railway'
+    },
+    {
+        'id': 'ncr',
+        'name': 'North Central Railway'
+    },
+    {
+        'id': 'ner',
+        'name': 'North Eastern Railway'
+    },
+    {
+        'id': 'nfr',
+        'name': 'Northeast Frontier Railway'
+    },
+    {
+        'id': 'nwr',
+        'name': 'North Western Railway'
+    },
+    {
+        'id': 'sr',
+        'name': 'Southern Railway'
+    },
+    {
+        'id': 'scr',
+        'name': 'South Central Railway'
+    },
+    {
+        'id': 'secr',
+        'name': 'South East Central Railway'
+    },
+    {
+        'id': 'ser',
+        'name': 'South Eastern Railway'
+    },
+    {
+        'id': 'swr',
+        'name': 'South Western Railway'
+    },
+    {
+        'id': 'wr',
+        'name': 'Western Railway'
+    },
+    {
+        'id': 'wcr',
+        'name': 'West Central Railway'
+    },
+    {
+        'id': 'er',
+        'name': 'Eastern Railway'
+    },
+    {
+        'id': 'ecr',
+        'name': 'East Central Railway'
+    },
+    {
+        'id': 'ecor',
+        'name': 'East Coast Railway'
+    }
+];
+
+map.on('style.load', function () {
+    function toggle(id) {
+      var currentState = map.getLayoutProperty(id, 'visibility');
+      var nextState = currentState === 'none' ? 'visible' : 'none';
+      map.setLayoutProperty(id, 'visibility', nextState);
+    }
+
+    function hide(id) {
+      map.setLayoutProperty(id, 'visibility', 'none');   
+    }
+
+    // function show(id) {
+    //   map.setLayoutProperty(id, 'visibility', 'visible');   
+    // }
+
+    // function showAll() {
+    //     zones.forEach(function (zone) {
+    //         show(zone.id);
+    //     });
+    // }
+
+    $('#play').on('click', function () {
+        $('#stop').removeClass('active');
+        $(this).addClass('active');
+        play = true;
+    });
+
+    $('#stop').on('click', function () {
+        $('#play').removeClass('active');
+        $(this).addClass('active');
+        play = false;
+    });
+
+    // $('#all').on('click', function () {
+    //     play = false;
+    //     showAll();
+    // });
+
+    setInterval(function () {
+        if (play) {
+            if (index > 0) {
+                hide(zones[index - 1].id);
+            }
+            if (index === 0) {
+                hide(zones[zones.length - 1].id);
+            }
+
+            toggle(zones[index].id);
+            document.getElementById('name').innerHTML = zones[index].name;
+            if (index === (zones.length - 1)) {
+                index = 0;
+            } else {
+                index = index + 1;
+            }        
+        }
+    }, 2000);
+});
+
+Google Analytics
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-75475863-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>
+
