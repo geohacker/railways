@@ -20,3 +20,9 @@ _Longest route is Kanniyakumari - Dibrugarh Express. [View interactive map](http
 
 _There are 17 railway zones. [View interactive map here](http://geohacker.in/railways/zones.html#4/22.33/77.25)._
 
+
+## Rajdhani Trains
+
+![rajdhanis](https://cloud.githubusercontent.com/assets/371666/17647779/004aa3fe-621e-11e6-85fe-b4da81ba0465.png)
+
+[_View interactive map here](https://api.mapbox.com/styles/v1/geohacker/cirsvvors0004gwkln6farig2.html?fresh=true&title=true&access_token=pk.eyJ1IjoiZ2VvaGFja2VyIiwiYSI6ImFIN0hENW8ifQ.GGpH9gLyEg0PZf3NPQ7Vrg#4.1/23.081/79.876)._
